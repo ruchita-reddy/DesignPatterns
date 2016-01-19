@@ -1,4 +1,4 @@
-package ge.com;
+//package ge.com;
 
 public class Helicopter implements Air{
 	int minSpeed;

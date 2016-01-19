@@ -1,4 +1,4 @@
-package ge.com;
+//package ge.com;
 
 public class Truck implements Land{
 	int minTemp;

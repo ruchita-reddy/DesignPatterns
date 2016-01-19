@@ -1,4 +1,4 @@
-package ge.com;
+//package ge.com;
 
 public interface Land 
 {
