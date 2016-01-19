@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Assumes UTF-8 encoding. JDK 7+. */
 public class FileParser {
@@ -16,6 +18,25 @@ public class FileParser {
     log("Reading DRS data from testfile2.txt.............................");
     parser1.processParam();
     log("Parsing Done.");
+
+	List<Land>landVehicleList=new ArrayList<Land>();
+	List<Air>airVehicleList=new ArrayList<Air>();   
+	AbstractFactory abs = FactoryProducer.getFactory("LAND");
+	landVehicleList.add(abs.getLandVehicle("TRUCK","L001", 0, 2000));
+	landVehicleList.add(abs.getLandVehicle("CAR","L002", 0, 1000));
+	
+	for (int i=0;i<landVehicleList.size();i++)
+	{
+		System.out.println(landVehicleList.get(i));
+	}
+	
+	abs = FactoryProducer.getFactory("AIR");
+	airVehicleList.add(abs.getAirVehicle("PLANE","A001", 0, 3000));
+	airVehicleList.add(abs.getAirVehicle("HELICOPTER","A002", 0, 500));
+	for (int i=0;i<airVehicleList.size();i++)
+	{
+		System.out.println(airVehicleList.get(i));
+	}
   }
   
   /**

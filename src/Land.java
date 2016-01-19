@@ -1,6 +1,8 @@
+package ge.com;
 
-public interface Land {
+public interface Land 
+{
 	
-	void createVehicleLand(String vehType, String id, int min, int max);
-
+	void initializeLandVehicle(String input);
+	void getVal(String id);
 }
