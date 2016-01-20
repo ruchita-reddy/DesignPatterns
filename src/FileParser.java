@@ -10,33 +10,53 @@ import java.util.List;
 /** Assumes UTF-8 encoding. JDK 7+. */
 public class FileParser {
 
-  public static void main(String args[]) throws IOException {
-    FileParser parser = new FileParser(args[0]);
+	public static List<Land>landVehicleList=new ArrayList<Land>();
+	public static List<Air>AirVehicleList=new ArrayList<Air>();
+  
+	public static void main(String args[]) throws IOException {
+    //FileParser parser = new FileParser(args[0]);
     log("Reading Vehicle Details from testfile1.txt......................");
-    parser.processInput();
+    //parser.processInput();
     FileParser parser1=new FileParser(args[1]);
     log("Reading DRS data from testfile2.txt.............................");
+	AbstractFactory abs = FactoryProducer.getFactory("LAND");
+	landVehicleList.add(abs.getLandVehicle("TRUCK","L0001", 0, 100));
+	landVehicleList.add(abs.getLandVehicle("CAR","L0002", 0, 80));
+	abs = FactoryProducer.getFactory("AIR");
+	AirVehicleList.add(abs.getAirVehicle("PLANE","A0001", 0, 300));
+	AirVehicleList.add(abs.getAirVehicle("HELICOPTER","A0002", 0, 500));
     parser1.processParam();
     log("Parsing Done.");
-
-	List<Land>landVehicleList=new ArrayList<Land>();
-	List<Air>airVehicleList=new ArrayList<Air>();   
-	AbstractFactory abs = FactoryProducer.getFactory("LAND");
-	landVehicleList.add(abs.getLandVehicle("TRUCK","L001", 0, 2000));
-	landVehicleList.add(abs.getLandVehicle("CAR","L002", 0, 1000));
-	
+  
+	/*
 	for (int i=0;i<landVehicleList.size();i++)
 	{
 		System.out.println(landVehicleList.get(i));
 	}
-	
-	abs = FactoryProducer.getFactory("AIR");
-	airVehicleList.add(abs.getAirVehicle("PLANE","A001", 0, 3000));
-	airVehicleList.add(abs.getAirVehicle("HELICOPTER","A002", 0, 500));
+	*/
+
+	/*
 	for (int i=0;i<airVehicleList.size();i++)
 	{
 		System.out.println(airVehicleList.get(i));
 	}
+	*/
+	
+	/* ******************SANDESH CHANGES WILL COME HERE****************************
+	 * for(int i=0;i<twoDimensionalArray.NoOfRows,i++)
+	 * {
+	 * 		if(str1 == "LAND")
+	 *      {
+	 *          abs = FactoryProducer.getFactory("LAND");
+	 *          landVehicleList.add(abs.getLandVehicle(str2,str3, min, max));
+	 *      }
+	 *      else if(str1 == "AIR")
+	 *      {
+	 *         abs = FactoryProducer.getFactory("AIR");
+	 *         airVehicleList.add(abs.getAirVehicle(str2,str3, min, max));
+	 *      }    
+	 * }
+	 * */
   }
   
   /**
@@ -71,21 +91,171 @@ public class FileParser {
   */
   protected void processMultiple(String aLine){
 	  Scanner scanner4 = new Scanner(aLine);
+	  boolean result;
 	  scanner4.useDelimiter(",");
 	  if (scanner4.hasNext()){
 		  String one =scanner4.next();
 		  String two =scanner4.next();
 		  String data1[] = one.split(":");
 		  String data3[] = data1[1].split("=");
-		 
-		  String temp1=data1[1].replaceAll("[^0-9]","");
+		  
 		  String data2[] = two.split(":");
-		  String temp2=data2[1].replaceAll("[^0-9]","");
-		  log(quote(data1[0])+quote(data3[0])+quote(temp1)+quote(temp2));
-	  }
-	  
-	  
+		  String data4[] = data2[1].split("=");
+		  
+		  data2[0]=data2[0].substring(1);
+		  //System.out.println("data1[0]="+data1[0]+" data3[1]="+data3[1]);
+		  //System.out.println("data2[0]="+data2[0]+" data4[1]="+data4[1]);
+		  if(data1[0].startsWith("L"))
+		  {
+			    String data5[];
+				String[] array = new String[landVehicleList.size()];
+				int index = 0;
+				for (Land value : landVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data3[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+		  }
+		  else if(data1[0].startsWith("A"))
+		  {
+			    String data5[];
+				String[] array = new String[AirVehicleList.size()];
+				int index = 0;
+				for (Air value : AirVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data3[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+		  }
+		  else if(data1[0].startsWith("W"))
+		  {
+			  /*
+			    String data5[];
+				String[] array = new String[WaterVehicleList.size()];
+				int index = 0;
+				for (Water value : WaterVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data3[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+				*/
+		  }
+		  
+		  if(data2[0].startsWith("L"))
+		  {
+			    String data5[];
+				String[] array = new String[landVehicleList.size()];
+				int index = 0;
+				for (Land value : landVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data4[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+		  }
+		  else if(data2[0].startsWith("A"))
+		  {
+			    String data5[];
+				String[] array = new String[AirVehicleList.size()];
+				int index = 0;
+				for (Air value : AirVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data4[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+		  }
+		  else if(data2[0].startsWith("W"))
+		  {
+			  /*
+			    String data5[];
+				String[] array = new String[WaterVehicleList.size()];
+				int index = 0;
+				for (Water value : WaterVehicleList) {
+				  array[index] = String.valueOf( value );
+				  
+				  data5=array[index].split("-");
+
+				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
+						  Integer.parseInt(data4[1]));
+
+				  if(result)
+				  {
+					  System.out.println("Anomaly Found!!!");
+					  break;
+				  }
+				  index++;
+				}
+				*/
+		  }  
+	  }  
   }
+  
+  protected boolean findAnomaly(String idInList, String idFromFile, int rangeMin, int rangeMax, int rcvVal)
+  {
+	  if(idInList.equals(idFromFile))
+	  {
+		  if(rangeMin < rcvVal
+				  && rcvVal < rangeMax)
+		  {
+			  
+		  }
+		  else
+		  {
+			  return true;
+		  } 
+	  }
+	  return false;
+  }
+  
   protected void processLine(String aLine){
     //use a second Scanner to parse the content of each line 
     Scanner scanner1 = new Scanner(aLine);
