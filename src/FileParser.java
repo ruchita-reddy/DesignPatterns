@@ -8,16 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Assumes UTF-8 encoding. JDK 7+. */
-public class FileParser {
+public class FileParser{
 
 	public static List<Land>landVehicleList=new ArrayList<Land>();
 	public static List<Air>AirVehicleList=new ArrayList<Air>();
-  
+    static ObserverRegister ob = new ObserverRegister();
+    static Management mg = new Management();
+	
 	public static void main(String args[]) throws IOException {
     //FileParser parser = new FileParser(args[0]);
+		
     log("Reading Vehicle Details from testfile1.txt......................");
     //parser.processInput();
     FileParser parser1=new FileParser(args[1]);
+    FileParser.ob.attach(mg);
     log("Reading DRS data from testfile2.txt.............................");
 	AbstractFactory abs = FactoryProducer.getFactory("LAND");
 	landVehicleList.add(abs.getLandVehicle("TRUCK","L0001", 0, 100));
@@ -78,6 +82,7 @@ public class FileParser {
   }
   
   public final void processParam() throws IOException {
+	    
 	    try (Scanner scannerP =  new Scanner(fFilePath, ENCODING.name())){
 	      while (scannerP.hasNextLine()){
 	        processMultiple(scannerP.nextLine());
@@ -246,10 +251,11 @@ public class FileParser {
 		  if(rangeMin < rcvVal
 				  && rcvVal < rangeMax)
 		  {
-			  
+			  /*Nothing comes here*/
 		  }
 		  else
 		  {
+			  FileParser.ob.setAnomaly(true);
 			  return true;
 		  } 
 	  }
