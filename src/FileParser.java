@@ -31,8 +31,8 @@ public class FileParser{
 	AirVehicleList.add(abs.getAirVehicle("PLANE","A0001", 0, 300));
 	AirVehicleList.add(abs.getAirVehicle("HELICOPTER","A0002", 0, 500));
 	abs = FactoryProducer.getFactory("WATER");
-	WaterVehicleList.add(abs.getWaterVehicle("SHIP","A0001", 0, 300));
-	WaterVehicleList.add(abs.getWaterVehicle("YACHET","A0002", 0, 500));
+	WaterVehicleList.add(abs.getWaterVehicle("SHIP","S0001", 0, 300));
+	WaterVehicleList.add(abs.getWaterVehicle("YACHET","S0002", 0, 500));
     parser1.processParam();
     log("Parsing Done.");
   
