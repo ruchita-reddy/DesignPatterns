@@ -158,7 +158,6 @@ public class FileParser{
 		  }
 		  else if(data1[0].startsWith("S"))
 		  {
-			    System.out.println("W1");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
@@ -224,7 +223,6 @@ public class FileParser{
 		  }
 		  else if(data2[0].startsWith("S"))
 		  {
-			  	System.out.println("W2");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
