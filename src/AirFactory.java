@@ -18,4 +18,10 @@ public class AirFactory extends AbstractFactory{
 	{
 		return null;
 	}
+	
+	@Override
+	public Water getWaterVehicle(String id, String vehId, int min, int max)
+	{
+		return null;
+	}
 }

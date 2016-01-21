@@ -8,6 +8,7 @@ public class FactoryProducer {
 		{
 		case "LAND": return new LandFactory();
 		case "AIR": return new AirFactory();
+		case "WATER": return new WaterFactory();
 		}
 		
 		return null;
