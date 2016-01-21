@@ -19,11 +19,11 @@ public class FileParser{
 	public static void main(String args[]) throws IOException {
     //FileParser parser = new FileParser(args[0]);
 		
-    log("Reading Vehicle Details from testfile1.txt......................");
+    Logger.getInstance().log("Reading Vehicle Details from testfile1.txt......................");
     //parser.processInput();
     FileParser parser1=new FileParser(args[1]);
     FileParser.ob.attach(mg);
-    log("Reading DRS data from testfile2.txt.............................");
+    Logger.getInstance().log("Reading DRS data from testfile2.txt.............................");
 	AbstractFactory abs = FactoryProducer.getFactory("LAND");
 	landVehicleList.add(abs.getLandVehicle("TRUCK","L0001", 0, 100));
 	landVehicleList.add(abs.getLandVehicle("CAR","L0002", 0, 80));
@@ -34,7 +34,7 @@ public class FileParser{
 	WaterVehicleList.add(abs.getWaterVehicle("SHIP","S0001", 0, 300));
 	WaterVehicleList.add(abs.getWaterVehicle("YACHET","S0002", 0, 500));
     parser1.processParam();
-    log("Parsing Done.");
+    Logger.getInstance().log("Parsing Done.");
   
 	/*
 	for (int i=0;i<landVehicleList.size();i++)
@@ -158,6 +158,7 @@ public class FileParser{
 		  }
 		  else if(data1[0].startsWith("S"))
 		  {
+			    System.out.println("W1");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
@@ -223,6 +224,7 @@ public class FileParser{
 		  }
 		  else if(data2[0].startsWith("S"))
 		  {
+			  	System.out.println("W2");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
@@ -276,10 +278,10 @@ public class FileParser{
     	  processWord(value);
       if(name.equals("[PARAMETER]"))
     	  processField(value);
-     // log("Parameter is : " + quote(name.trim()) + ", and Value is : " + quote(value.trim()));
+     // Logger.getInstance().log("Parameter is : " + quote(name.trim()) + ", and Value is : " + quote(value.trim()));
     }
     else {
-      log("Empty or invalid line. Unable to process.");
+      Logger.getInstance().log("Empty or invalid line. Unable to process.");
     }
   }
   protected void processField(String aField){
@@ -295,10 +297,10 @@ public class FileParser{
 		  field3=field3.replaceAll("\\d", "");
 		  String field4=scanner3.next();
 		  field4=field4.replaceAll("\\)","");
-		  log(quote(field1.trim()) +quote(field2.trim())+quote(field3.trim())+quote(field31.trim())+ quote(field4.trim()));  
+		  Logger.getInstance().log(quote(field1.trim()) +quote(field2.trim())+quote(field3.trim())+quote(field31.trim())+ quote(field4.trim()));  
 	  }
 	  else 
-	      log("Empty or invalid field. Unable to process.");
+	      Logger.getInstance().log("Empty or invalid field. Unable to process.");
   }
   
   protected void processWord(String aWord){
@@ -308,10 +310,10 @@ public class FileParser{
 		  String family = scanner2.next();
 		  String type = scanner2.next();
 		  String id = scanner2.next();
-		  log(quote(family.trim()) + quote(type.trim())+ quote(id.trim()));
+		  Logger.getInstance().log(quote(family.trim()) + quote(type.trim())+ quote(id.trim()));
 	  }
 	  else {
-	      log("Empty or invalid field. Unable to process.");
+	      Logger.getInstance().log("Empty or invalid field. Unable to process.");
 	    }
 	  
   }
@@ -319,9 +321,9 @@ public class FileParser{
   private final Path fFilePath;
   private final static Charset ENCODING = StandardCharsets.UTF_8;  
   
-  private static void log(Object aObject){
+  /*private static void Logger.getInstance().log(Object aObject){
     System.out.println(String.valueOf(aObject));
-  }
+  }*/
   
   private String quote(String aText){
     String QUOTE = "'";
