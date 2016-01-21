@@ -12,6 +12,7 @@ public class FileParser{
 
 	public static List<Land>landVehicleList=new ArrayList<Land>();
 	public static List<Air>AirVehicleList=new ArrayList<Air>();
+	public static List<Water>WaterVehicleList=new ArrayList<Water>();
     static ObserverRegister ob = new ObserverRegister();
     static Management mg = new Management();
 	
@@ -29,6 +30,9 @@ public class FileParser{
 	abs = FactoryProducer.getFactory("AIR");
 	AirVehicleList.add(abs.getAirVehicle("PLANE","A0001", 0, 300));
 	AirVehicleList.add(abs.getAirVehicle("HELICOPTER","A0002", 0, 500));
+	abs = FactoryProducer.getFactory("WATER");
+	WaterVehicleList.add(abs.getWaterVehicle("SHIP","A0001", 0, 300));
+	WaterVehicleList.add(abs.getWaterVehicle("YACHET","A0002", 0, 500));
     parser1.processParam();
     log("Parsing Done.");
   
@@ -152,9 +156,9 @@ public class FileParser{
 				  index++;
 				}
 		  }
-		  else if(data1[0].startsWith("W"))
+		  else if(data1[0].startsWith("S"))
 		  {
-			  /*
+			    System.out.println("W1");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
@@ -173,7 +177,7 @@ public class FileParser{
 				  }
 				  index++;
 				}
-				*/
+				
 		  }
 		  
 		  if(data2[0].startsWith("L"))
@@ -218,9 +222,9 @@ public class FileParser{
 				  index++;
 				}
 		  }
-		  else if(data2[0].startsWith("W"))
+		  else if(data2[0].startsWith("S"))
 		  {
-			  /*
+			  	System.out.println("W2");
 			    String data5[];
 				String[] array = new String[WaterVehicleList.size()];
 				int index = 0;
@@ -239,7 +243,7 @@ public class FileParser{
 				  }
 				  index++;
 				}
-				*/
+				
 		  }  
 	  }  
   }
