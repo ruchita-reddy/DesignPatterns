@@ -1,39 +1,35 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Assumes UTF-8 encoding. JDK 7+. */
 public class FileParser{
 
 	public static List<Land>landVehicleList=new ArrayList<Land>();
 	public static List<Air>AirVehicleList=new ArrayList<Air>();
 	public static List<Water>WaterVehicleList=new ArrayList<Water>();
+	public static int counter=0;
     static ObserverRegister ob = new ObserverRegister();
     static Management mg = new Management();
+	public static FMSPoint fmsObj = new FMSPoint();
 	
 	public static void main(String args[]) throws IOException {
-    //FileParser parser = new FileParser(args[0]);
-		
+    FileParser parser = new FileParser(args[0]);
+		FileParser.ob.attach(mg);
     Logger.getInstance().log("Reading Vehicle Details from testfile1.txt......................");
-    //parser.processInput();
-    FileParser parser1=new FileParser(args[1]);
-    FileParser.ob.attach(mg);
+    parser.assetProcessor(args[0]);
     Logger.getInstance().log("Reading DRS data from testfile2.txt.............................");
-	AbstractFactory abs = FactoryProducer.getFactory("LAND");
-	landVehicleList.add(abs.getLandVehicle("TRUCK","L0001", 0, 100));
-	landVehicleList.add(abs.getLandVehicle("CAR","L0002", 0, 80));
-	abs = FactoryProducer.getFactory("AIR");
-	AirVehicleList.add(abs.getAirVehicle("PLANE","A0001", 0, 300));
-	AirVehicleList.add(abs.getAirVehicle("HELICOPTER","A0002", 0, 500));
-	abs = FactoryProducer.getFactory("WATER");
-	WaterVehicleList.add(abs.getWaterVehicle("SHIP","S0001", 0, 300));
-	WaterVehicleList.add(abs.getWaterVehicle("YACHET","S0002", 0, 500));
-    parser1.processParam();
+	fmsObj.processParam(args[1]);
     Logger.getInstance().log("Parsing Done.");
   
 	/*
@@ -50,21 +46,6 @@ public class FileParser{
 	}
 	*/
 	
-	/* ******************SANDESH CHANGES WILL COME HERE****************************
-	 * for(int i=0;i<twoDimensionalArray.NoOfRows,i++)
-	 * {
-	 * 		if(str1 == "LAND")
-	 *      {
-	 *          abs = FactoryProducer.getFactory("LAND");
-	 *          landVehicleList.add(abs.getLandVehicle(str2,str3, min, max));
-	 *      }
-	 *      else if(str1 == "AIR")
-	 *      {
-	 *         abs = FactoryProducer.getFactory("AIR");
-	 *         airVehicleList.add(abs.getAirVehicle(str2,str3, min, max));
-	 *      }    
-	 * }
-	 * */
   }
   
   /**
@@ -75,216 +56,74 @@ public class FileParser{
     fFilePath = Paths.get(aFileName);
   }
   
-  
-  /** Template method that calls {@link #processLine(String)}.  */
-  public final void processInput() throws IOException {
-    try (Scanner scanner =  new Scanner(fFilePath, ENCODING.name())){
-      while (scanner.hasNextLine()){
-        processLine(scanner.nextLine());
-      }      
-    }
-  }
-  
-  public final void processParam() throws IOException {
-	    
-	    try (Scanner scannerP =  new Scanner(fFilePath, ENCODING.name())){
-	      while (scannerP.hasNextLine()){
-	        processMultiple(scannerP.nextLine());
-	      }      
-	    }
-	  }
-  /** 
-   Overridable method for processing lines in different ways.
-    
-   
-  */
-  protected void processMultiple(String aLine){
-	  Scanner scanner4 = new Scanner(aLine);
-	  boolean result;
-	  scanner4.useDelimiter(",");
-	  if (scanner4.hasNext()){
-		  String one =scanner4.next();
-		  String two =scanner4.next();
-		  String data1[] = one.split(":");
-		  String data3[] = data1[1].split("=");
-		  
-		  String data2[] = two.split(":");
-		  String data4[] = data2[1].split("=");
-		  
-		  data2[0]=data2[0].substring(1);
-		  //System.out.println("data1[0]="+data1[0]+" data3[1]="+data3[1]);
-		  //System.out.println("data2[0]="+data2[0]+" data4[1]="+data4[1]);
-		  if(data1[0].startsWith("L"))
-		  {
-			    String data5[];
-				String[] array = new String[landVehicleList.size()];
-				int index = 0;
-				for (Land value : landVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data3[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-		  }
-		  else if(data1[0].startsWith("A"))
-		  {
-			    String data5[];
-				String[] array = new String[AirVehicleList.size()];
-				int index = 0;
-				for (Air value : AirVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data3[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-		  }
-		  else if(data1[0].startsWith("S"))
-		  {
-			    System.out.println("W1");
-			    String data5[];
-				String[] array = new String[WaterVehicleList.size()];
-				int index = 0;
-				for (Water value : WaterVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data1[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data3[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-				
-		  }
-		  
-		  if(data2[0].startsWith("L"))
-		  {
-			    String data5[];
-				String[] array = new String[landVehicleList.size()];
-				int index = 0;
-				for (Land value : landVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data4[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-		  }
-		  else if(data2[0].startsWith("A"))
-		  {
-			    String data5[];
-				String[] array = new String[AirVehicleList.size()];
-				int index = 0;
-				for (Air value : AirVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data4[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-		  }
-		  else if(data2[0].startsWith("S"))
-		  {
-			  	System.out.println("W2");
-			    String data5[];
-				String[] array = new String[WaterVehicleList.size()];
-				int index = 0;
-				for (Water value : WaterVehicleList) {
-				  array[index] = String.valueOf( value );
-				  
-				  data5=array[index].split("-");
-
-				  result = findAnomaly(data5[0], data2[0],Integer.parseInt(data5[1]),Integer.parseInt(data5[2]),
-						  Integer.parseInt(data4[1]));
-
-				  if(result)
-				  {
-					  System.out.println("Anomaly Found!!!");
-					  break;
-				  }
-				  index++;
-				}
-				
-		  }  
-	  }  
-  }
-  
-  protected boolean findAnomaly(String idInList, String idFromFile, int rangeMin, int rangeMax, int rcvVal)
+  public void assetProcessor(String input) throws FileNotFoundException, IOException
   {
-	  if(idInList.equals(idFromFile))
+	  AssetProperties assetObj = new AssetProperties();
+	  FileInputStream inputStream = new FileInputStream(input);
+	  BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	  String strLine;
+	  AbstractFactory abs ;
+		List<String> vehicleFamilyList = new ArrayList<>();
+		List<String> vehicleTypeList = new ArrayList<>();
+		List<String> parameterList = new ArrayList<>();
+		List<String> instanceList = new ArrayList<>();
+
+	  while((strLine = reader.readLine()) != null)
 	  {
-		  if(rangeMin < rcvVal
-				  && rcvVal < rangeMax)
-		  {
-			  /*Nothing comes here*/
-		  }
-		  else
-		  {
-			  FileParser.ob.setAnomaly(true);
-			  return true;
-		  } 
+			if (strLine.startsWith("[VEHICLE_FAMILY]")) {
+				String[] vehicleFamilyType = strLine.split("=");
+				vehicleFamilyList.add(vehicleFamilyType[1]);
+			} else if (strLine.startsWith("[VEHICLE_TYPE]")) {
+				String[] vehicleType = strLine.split("=");
+				vehicleTypeList.add(vehicleType[1]);
+			}
+
+			else if (strLine.startsWith("[PARAMETER]")) {
+				String[] parameter = strLine.split("=");
+				parameterList.add(parameter[1]);
+			} else if (strLine.startsWith("[DEFINE_VEHICLE]")) {
+				String[] instance = strLine.split("=");
+				instanceList.add(instance[1]);
+			}
 	  }
-	  return false;
+
+	  for(int i=0; i<parameterList.size(); i++)
+	  {
+		  processWord(instanceList.get(i),assetObj);
+		  processField(parameterList.get(i),assetObj);
+
+		  switch(assetObj.type)
+		  {
+		  case "TRUCK":
+			    abs = FactoryProducer.getFactory("LAND");
+				landVehicleList.add(abs.getLandVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  case "CAR":
+			  abs = FactoryProducer.getFactory("LAND");
+			  landVehicleList.add(abs.getLandVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  case "PLANE":
+			  abs = FactoryProducer.getFactory("AIR");
+				AirVehicleList.add(abs.getAirVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  case "HELICOPTER":
+			  abs = FactoryProducer.getFactory("AIR");
+				AirVehicleList.add(abs.getAirVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  case "SHIP":
+			  abs = FactoryProducer.getFactory("WATER");
+				WaterVehicleList.add(abs.getWaterVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  case "YACHET":
+			  abs = FactoryProducer.getFactory("WATER");
+			  WaterVehicleList.add(abs.getWaterVehicle(assetObj.type,assetObj.id, assetObj.min,assetObj.max));
+			  break;
+		  }
+		  
+	  }
   }
   
-  protected void processLine(String aLine){
-    //use a second Scanner to parse the content of each line 
-    Scanner scanner1 = new Scanner(aLine);
-    scanner1.useDelimiter("=");
-    if (scanner1.hasNext()){
-      //assumes the line has a certain structure
-      String name = scanner1.next();
-      String value = scanner1.next();
-      if(name.equals("[DEFINE_VEHICLE]"))
-    	  processWord(value);
-      if(name.equals("[PARAMETER]"))
-    	  processField(value);
-     // Logger.getInstance().log("Parameter is : " + quote(name.trim()) + ", and Value is : " + quote(value.trim()));
-    }
-    else {
-      Logger.getInstance().log("Empty or invalid line. Unable to process.");
-    }
-  }
-  protected void processField(String aField){
+  protected void processField(String aField, AssetProperties assetObj){
 	  Scanner scanner3 = new Scanner(aField);
 	  scanner3.useDelimiter(":");
 	  if (scanner3.hasNext()){
@@ -297,20 +136,23 @@ public class FileParser{
 		  field3=field3.replaceAll("\\d", "");
 		  String field4=scanner3.next();
 		  field4=field4.replaceAll("\\)","");
-		  Logger.getInstance().log(quote(field1.trim()) +quote(field2.trim())+quote(field3.trim())+quote(field31.trim())+ quote(field4.trim()));  
+		  
+		  assetObj.min=Integer.parseInt(field31.trim());
+		  assetObj.max=Integer.parseInt(field4.trim());
+		  assetObj.type=field2.trim();
 	  }
 	  else 
 	      Logger.getInstance().log("Empty or invalid field. Unable to process.");
   }
   
-  protected void processWord(String aWord){
+  protected void processWord(String aWord, AssetProperties assetObj){
 	  Scanner scanner2 = new Scanner(aWord);
 	  scanner2.useDelimiter(":");
 	  if (scanner2.hasNext()){
 		  String family = scanner2.next();
 		  String type = scanner2.next();
 		  String id = scanner2.next();
-		  Logger.getInstance().log(quote(family.trim()) + quote(type.trim())+ quote(id.trim()));
+		  assetObj.id=id.trim();
 	  }
 	  else {
 	      Logger.getInstance().log("Empty or invalid field. Unable to process.");
@@ -321,12 +163,5 @@ public class FileParser{
   private final Path fFilePath;
   private final static Charset ENCODING = StandardCharsets.UTF_8;  
   
-  /*private static void Logger.getInstance().log(Object aObject){
-    System.out.println(String.valueOf(aObject));
-  }*/
   
-  private String quote(String aText){
-    String QUOTE = "'";
-    return QUOTE + aText + QUOTE;
-  }
 } 
