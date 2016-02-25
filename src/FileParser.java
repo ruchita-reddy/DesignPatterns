@@ -26,8 +26,10 @@ public class FileParser{
 	public static void main(String args[]) throws IOException {
     FileParser parser = new FileParser(args[0]);
 		FileParser.ob.attach(mg);
-    Logger.getInstance().log("Reading Vehicle Details from testfile1.txt......................");
+    Logger.getInstance().log("Reading Vehicle Details from Asset Input File......................");
     parser.assetProcessor(args[0]);
+    //Logger.getInstance().log("Reading Rule Book......................");
+    //parser.ruleProcessor(args[1]);
     Logger.getInstance().log("Reading DRS data from testfile2.txt.............................");
 	fmsObj.processParam(args[1]);
     Logger.getInstance().log("Parsing Done.");
@@ -54,6 +56,11 @@ public class FileParser{
   */
   public FileParser(String aFileName){
     fFilePath = Paths.get(aFileName);
+  }
+  
+  public void ruleProcessor(String input) throws FileNotFoundException, IOException
+  {
+	  
   }
   
   public void assetProcessor(String input) throws FileNotFoundException, IOException
@@ -121,6 +128,7 @@ public class FileParser{
 		  }
 		  
 	  }
+	  reader.close();
   }
   
   protected void processField(String aField, AssetProperties assetObj){
